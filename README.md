@@ -163,3 +163,7 @@ Voir `TESTS.md` (checklist issue des spécifications).
 ## Licence
 
 Contenu pédagogique libre d’usage dans le cadre du projet.
+
+## Illustrations
+
+Pictogrammes **Fluent Emoji** (Microsoft, licence MIT), complétés par un radis OpenMoji (CC BY-SA 4.0). Détail : `assets/images/CREDITS.md`.
