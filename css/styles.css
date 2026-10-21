@@ -154,9 +154,10 @@ img {
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-auto-rows: minmax(0, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
   gap: 12px;
+  align-content: stretch;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 4px;
@@ -166,8 +167,9 @@ img {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  min-height: var(--touch);
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
   padding: 10px;
   border-radius: var(--radius);
   background: var(--surface);
@@ -181,10 +183,14 @@ img {
   background: #fff;
 }
 
+/* Image stays square and scales with the card (never overflows) */
 .tile img {
-  width: 72%;
-  max-width: 140px;
+  display: block;
+  flex: 0 1 auto;
+  width: auto;
   height: auto;
+  max-width: 82%;
+  max-height: calc(100% - 2.8em);
   aspect-ratio: 1 / 1;
   object-fit: contain;
   border-radius: 16px;
@@ -192,11 +198,19 @@ img {
 }
 
 .tile-label {
-  margin-top: 8px;
-  font-size: 18px;
+  flex: 0 0 auto;
+  margin-top: 6px;
+  font-size: clamp(14px, 2.2vw, 18px);
   font-weight: bold;
-  line-height: 1.2;
-  max-height: 2.4em;
+  line-height: 1.15;
+  max-height: 2.3em;
+  overflow: hidden;
+}
+
+.category-tile {
+  width: 100%;
+  height: 100%;
+  /* Clip image inside fixed landscape cells without collapsing auto rows */
   overflow: hidden;
 }
 
@@ -219,25 +233,23 @@ img {
 }
 
 .product-tile {
-  min-height: 0;
+  width: 100%;
   height: 100%;
+  min-height: 0;
   max-height: 100%;
   justify-content: center;
   padding: 8px;
-  overflow: hidden;
+  overflow: hidden; /* OK: row height is set explicitly in JS */
 }
 
 .product-tile img {
-  width: auto;
-  max-width: 70%;
-  max-height: 58%;
-  flex: 0 1 auto;
+  max-width: 78%;
+  max-height: calc(100% - 2.4em);
 }
 
 .product-tile .tile-label {
   margin-top: 4px;
-  font-size: 17px;
-  flex-shrink: 0;
+  font-size: clamp(14px, 2vw, 17px);
 }
 
 .scroll-hint {
@@ -706,18 +718,35 @@ img {
   transform: translateX(-50%) translateY(0);
 }
 
-/* Portrait: usable, not identical */
+/* Portrait: usable, cards keep a square-ish proportion */
 @media (orientation: portrait) {
   .app-title {
     font-size: 28px;
   }
 
   .category-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    grid-auto-rows: max-content;
+    align-content: start;
+  }
+
+  .category-tile {
+    height: auto;
+    aspect-ratio: 1 / 1.12;
+    align-self: start;
+    /* Keep overflow visible to auto-sized rows so cells don't collapse */
+    overflow: visible;
+  }
+
+  .category-tile img {
+    width: 70%;
+    max-width: 160px;
+    max-height: 68%;
   }
 
   .product-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .product-sheet-body {
@@ -726,6 +755,9 @@ img {
 
   .product-image {
     width: min(56vw, 240px);
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
   }
 
   .cart-bar {

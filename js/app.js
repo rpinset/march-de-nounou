@@ -204,11 +204,25 @@
         renderCartFooter();
     }
 
+    function getGridColumnCount(grid) {
+        var template;
+        var parts;
+
+        if (!window.getComputedStyle) {
+            return 4;
+        }
+
+        template = window.getComputedStyle(grid).gridTemplateColumns || '';
+        parts = template.replace(/\[.*?\]/g, '').trim().split(/\s+/).filter(Boolean);
+        return parts.length > 0 ? parts.length : 4;
+    }
+
     function measureProductGridViewport() {
         var grid = els.productGrid;
         var gap = 12;
         var available;
         var rowHeight;
+        var cols;
 
         if (!grid || !grid.querySelector('.product-tile')) {
             return;
@@ -229,7 +243,21 @@
             return;
         }
 
+        cols = getGridColumnCount(grid);
         rowHeight = Math.floor((available - gap) / 2);
+
+        /*
+         * In portrait (fewer columns), avoid extremely tall cells that
+         * stretch cards out of proportion — prefer a near-square card.
+         */
+        if (cols <= 2 && grid.clientWidth > 0) {
+            var colWidth = (grid.clientWidth - (gap * Math.max(cols - 1, 0))) / cols;
+            var maxProportional = Math.floor(colWidth * 1.2);
+            if (rowHeight > maxProportional) {
+                rowHeight = maxProportional;
+            }
+        }
+
         if (rowHeight < 56) {
             rowHeight = 56;
         }
