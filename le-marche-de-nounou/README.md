@@ -104,7 +104,7 @@ Fichier : `css/styles.css` — variables en tête de fichier :
 | `--touch` | Taille minimale tactile (56px) |
 | `--header-h` / `--cart-h` | Hauteurs en-tête / panier |
 
-La hauteur visible de la grille produits est calculée en JS pour n’afficher que **2 lignes** ; la 3ᵉ apparaît au défilement.
+La grille produits occupe **toute la hauteur restante** entre le titre de famille et le pied de page panier. La hauteur de ligne est calculée pour que **exactement 2 lignes** remplissent cette zone ; la 3ᵉ ligne se découvre au défilement (selon la résolution de l’écran).
 
 ## Ce qui est conservé / perdu
 

@@ -206,23 +206,35 @@
 
     function measureProductGridViewport() {
         var grid = els.productGrid;
-        var firstCard = grid.querySelector('.product-tile');
-        var gap;
-        var cardHeight;
-        var visibleHeight;
+        var gap = 12;
+        var available;
+        var rowHeight;
 
-        if (!firstCard) {
+        if (!grid || !grid.querySelector('.product-tile')) {
             return;
         }
 
-        gap = 12;
+        /* Let the flex layout give the grid 100% of the free space */
+        grid.style.height = '';
+        grid.style.maxHeight = '';
+        grid.style.gridAutoRows = '';
+
+        /* Force layout, then size rows so exactly 2 fill the viewport */
+        available = grid.clientHeight;
         if (window.getComputedStyle) {
             gap = parseFloat(window.getComputedStyle(grid).rowGap || window.getComputedStyle(grid).gap) || 12;
         }
 
-        cardHeight = firstCard.offsetHeight;
-        visibleHeight = (cardHeight * 2) + gap;
-        grid.style.maxHeight = visibleHeight + 'px';
+        if (available < 80) {
+            return;
+        }
+
+        rowHeight = Math.floor((available - gap) / 2);
+        if (rowHeight < 56) {
+            rowHeight = 56;
+        }
+
+        grid.style.gridAutoRows = rowHeight + 'px';
     }
 
     function updateScrollHint() {
@@ -274,13 +286,24 @@
         state.scrollHintDismissed = false;
         els.scrollHint.hidden = false;
 
-        window.setTimeout(function () {
+        scheduleProductGridMeasure();
+        renderCartFooter();
+    }
+
+    function scheduleProductGridMeasure() {
+        var run = function () {
             measureProductGridViewport();
             els.productGrid.scrollTop = state.categoryScrollPosition || 0;
             updateScrollHint();
-        }, 0);
+        };
 
-        renderCartFooter();
+        if (window.requestAnimationFrame) {
+            window.requestAnimationFrame(function () {
+                window.requestAnimationFrame(run);
+            });
+        } else {
+            window.setTimeout(run, 50);
+        }
     }
 
     function renderProduct() {
@@ -396,6 +419,7 @@
         setBackVisible(false);
         els.appSubtitle.textContent = '';
         state.currentView = 'done';
+        els.toast.classList.remove('is-visible');
         renderCartFooter();
     }
 
@@ -648,8 +672,7 @@
 
         window.addEventListener('resize', function () {
             if (state.currentView === 'category') {
-                measureProductGridViewport();
-                updateScrollHint();
+                scheduleProductGridMeasure();
             }
         });
     }
