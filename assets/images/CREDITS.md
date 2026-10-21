@@ -1,11 +1,7 @@
 # Illustrations
 
-La plupart des pictogrammes sont des **Fluent Emoji** (Microsoft), licence MIT :
+Les pictogrammes sont des **Fluent Emoji** (Microsoft), licence MIT :
 
 https://github.com/microsoft/fluentui-emoji
 
-Le radis reprend l’illustration OpenMoji « root vegetable » (CC BY-SA 4.0) :
-
-https://openmoji.org/
-
-Quelques variantes (chou, sole, teintes de truite, merguez, navet, jambon) sont adaptées localement pour rester distinctes dans chaque famille.
+Quelques dessins sont adaptés localement pour rester distincts dans une même famille : chou, radis, sole, et des variantes de teinte (truite, merguez, navet, jambon, anchois).
